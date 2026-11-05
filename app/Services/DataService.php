@@ -18,171 +18,172 @@ use App\Repositories\RetribusiRepository;
 
 class DataService
 {
-    public function __construct(
-        protected PbbRepository $pbbRepository,
-        protected BphtbRepository $bphtbRepository,
-        protected PbjtRepository $pbjtRepository,
-        protected HotelRepository $hotelRepository,
-        protected RestoranRepository $restoranRepository,
-        protected HiburanRepository $hiburanRepository,
-        protected PpjRepository $ppjRepository,
-        protected ParkirRepository $parkirRepository,
-        protected ReklameRepository $reklameRepository,
-        protected AirTanahRepository $airTanahRepository,
-        protected RetribusiRepository $retribusiRepository,
-        protected OpsenPkbRepository $opsenPkbRepository,
-        protected OpsenBbnkbRepository $opsenBbnkbRepository,
-    ) {}
+    /**
+     * Salt rahasia untuk memperkuat hashing
+     */
+    private string $salt = 'pajak_pekalongan_secret_salt_2026';
+
+    public function __construct() {}
 
     /**
-     * Mengambil daftar layanan beserta instansi repository & konfigurasinya
+     * Helper untuk menghasilkan Hash Key berbasis SHA-256 dengan prefix tx_
      */
-    public function getServices(): array
+    private function generateHashKey(string $key): string
     {
-        return [
-            [
-                'key' => 'pbb',
-                'name' => 'PBB',
-                'repository' => $this->pbbRepository,
-                'persentase' => true,
-                'target' => true,
-                'realisasi' => true,
-                'target_realisasi_pajak' => true,
-            ],
-            [
-                'key' => 'bphtb',
-                'name' => 'BPHTB',
-                'repository' => $this->bphtbRepository,
-                'persentase' => true,
-                'target' => true,
-                'realisasi' => true,
-                'target_realisasi_pajak' => true,
-            ],
-            [
-                'key' => 'pbjt',
-                'name' => 'PBJT',
-                'repository' => $this->pbjtRepository,
-                'persentase' => true,
-                'target' => false,
-                'realisasi' => true,
-                'target_realisasi_pajak' => false,
-            ],
-            [
-                'key' => 'hotel',
-                'name' => 'HOTEL',
-                'repository' => $this->hotelRepository,
-                'persentase' => false,
-                'target' => true,
-                'realisasi' => true,
-                'target_realisasi_pajak' => true,
-            ],
-            [
-                'key' => 'restoran',
-                'name' => 'RESTORAN',
-                'repository' => $this->restoranRepository,
-                'persentase' => false,
-                'target' => true,
-                'realisasi' => true,
-                'target_realisasi_pajak' => true,
-            ],
-            [
-                'key' => 'hiburan',
-                'name' => 'HIBURAN',
-                'repository' => $this->hiburanRepository,
-                'persentase' => false,
-                'target' => true,
-                'realisasi' => true,
-                'target_realisasi_pajak' => true,
-            ],
-            [
-                'key' => 'ppj',
-                'name' => 'PPJ',
-                'repository' => $this->ppjRepository,
-                'persentase' => false,
-                'target' => true,
-                'realisasi' => true,
-                'target_realisasi_pajak' => true,
-            ],
-            [
-                'key' => 'parkir',
-                'name' => 'PARKIR',
-                'repository' => $this->parkirRepository,
-                'persentase' => false,
-                'target' => true,
-                'realisasi' => true,
-                'target_realisasi_pajak' => true,
-            ],
-            [
-                'key' => 'reklame',
-                'name' => 'REKLAME',
-                'repository' => $this->reklameRepository,
-                'persentase' => true,
-                'target' => true,
-                'realisasi' => true,
-                'target_realisasi_pajak' => true,
-            ],
-            [
-                'key' => 'air-tanah',
-                'name' => 'AIR TANAH',
-                'repository' => $this->airTanahRepository,
-                'persentase' => true,
-                'target' => true,
-                'realisasi' => true,
-                'target_realisasi_pajak' => true,
-            ],
-            [
-                'key' => 'retribusi',
-                'name' => 'RETRIBUSI',
-                'repository' => $this->retribusiRepository,
-                'persentase' => true,
-                'target' => true,
-                'realisasi' => true,
-                'target_realisasi_pajak' => false,
-            ],
-            [
-                'key' => 'opsen-pkb',
-                'name' => 'OPS PKB',
-                'repository' => $this->opsenPkbRepository,
-                'persentase' => true,
-                'target' => true,
-                'realisasi' => true,
-                'target_realisasi_pajak' => false,
-            ],
-            [
-                'key' => 'opsen-bbnkb',
-                'name' => 'OPS BBNKB',
-                'repository' => $this->opsenBbnkbRepository,
-                'persentase' => true,
-                'target' => true,
-                'realisasi' => true,
-                'target_realisasi_pajak' => false,
-            ],
-        ];
+        $hash = substr(hash('sha256', $this->salt . '_' . $key), 0, 32);
+        return $hash;
     }
 
     /**
-     * Ambil data spesifik berdasarkan key jenis pajak secara dinamis
+     * Konfigurasi Master Pajak dengan Hashed Key (SHA-256 + tx_)
      */
-    public function getDataByJenis(string $jenis): ?array
+    public function getServicesConfig(): array
     {
-        $services = collect($this->getServices());
-        $service = $services->firstWhere('key', strtolower($jenis));
+        $rawItems = [
+            'pbb' => [
+                'name' => 'PBB',
+                'repository' => PbbRepository::class,
+                'persentase' => true,
+                'target' => true,
+                'realisasi' => true,
+            ],
+            'bphtb' => [
+                'name' => 'BPHTB',
+                'repository' => BphtbRepository::class,
+                'persentase' => true,
+                'target' => true,
+                'realisasi' => true,
+            ],
+            'pbjt' => [
+                'name' => 'PBJT',
+                'repository' => PbjtRepository::class,
+                'persentase' => true,
+                'target' => true,
+                'realisasi' => true,
+            ],
+            'hotel' => [
+                'name' => 'HOTEL',
+                'repository' => HotelRepository::class,
+                'persentase' => false,
+                'target' => true,
+                'realisasi' => true,
+            ],
+            'restoran' => [
+                'name' => 'RESTORAN',
+                'repository' => RestoranRepository::class,
+                'persentase' => false,
+                'target' => true,
+                'realisasi' => true,
+            ],
+            'hiburan' => [
+                'name' => 'HIBURAN',
+                'repository' => HiburanRepository::class,
+                'persentase' => false,
+                'target' => true,
+                'realisasi' => true,
+            ],
+            'ppj' => [
+                'name' => 'PPJ',
+                'repository' => PpjRepository::class,
+                'persentase' => false,
+                'target' => true,
+                'realisasi' => true,
+            ],
+            'parkir' => [
+                'name' => 'PARKIR',
+                'repository' => ParkirRepository::class,
+                'persentase' => false,
+                'target' => true,
+                'realisasi' => true,
+            ],
+            'reklame' => [
+                'name' => 'REKLAME',
+                'repository' => ReklameRepository::class,
+                'persentase' => true,
+                'target' => true,
+                'realisasi' => true,
+            ],
+            'air_tanah' => [
+                'name' => 'AIR TANAH',
+                'repository' => AirTanahRepository::class,
+                'persentase' => true,
+                'target' => true,
+                'realisasi' => true,
+            ],
+            'retribusi' => [
+                'name' => 'RETRIBUSI',
+                'repository' => RetribusiRepository::class,
+                'persentase' => true,
+                'target' => true,
+                'realisasi' => true,
+            ],
+            'opsen_pkb' => [
+                'name' => 'OPS PKB',
+                'repository' => OpsenPkbRepository::class,
+                'persentase' => true,
+                'target' => true,
+                'realisasi' => true,
+            ],
+            'opsen_bbnkb' => [
+                'name' => 'OPS BBNKB',
+                'repository' => OpsenBbnkbRepository::class,
+                'persentase' => true,
+                'target' => true,
+                'realisasi' => true,
+            ],
+        ];
 
-        if (!$service) {
+        $hashedConfig = [];
+        foreach ($rawItems as $key => $config) {
+            $hashKey = $this->generateHashKey($key);
+            $hashedConfig[$hashKey] = $config;
+        }
+
+        return $hashedConfig;
+    }
+
+    /**
+     * Mengambil daftar metadata jenis pajak (Ringan, Tanpa Eksekusi Query DB)
+     */
+    public function getMetadataList(): array
+    {
+        $list = [];
+
+        foreach ($this->getServicesConfig() as $hashKey => $config) {
+            $list[] = [
+                'name' => $config['name'],
+                'persentase' => $config['persentase'],
+                'realisasi' => $config['realisasi'],
+                'target' => $config['target'],
+                'endpoint' => url("/api/data/{$hashKey}"),
+            ];
+        }
+
+        return $list;
+    }
+
+    /**
+     * Mengambil data spesifik berdasarkan hash key (tx_xxx)
+     * Menggunakan Lazy Loading agar HANYA repository terkait yang di-instansiasi
+     */
+    public function getDataByHash(string $hashKey): ?array
+    {
+        $configs = $this->getServicesConfig();
+
+        if (!isset($configs[$hashKey])) {
             return null;
         }
 
-        /** @var \App\Services\Contracts\DataServiceInterface $repo */
-        $repo = $service['repository'];
+        $config = $configs[$hashKey];
+
+        // Lazy Loading via Laravel Container
+        $repo = app()->make($config['repository']);
 
         return [
-            'name'       => $service['name'],
-            'target'     => $service['target'] ? $repo->getTarget() : 0,
-            'realisasi'  => $service['realisasi'] ? $repo->getRealisasi() : 0,
-            'flags'      => [
-                'persentase'             => $service['persentase'],
-                'target_realisasi_pajak' => $service['target_realisasi_pajak'],
-            ]
+            'name' => $config['name'],
+            'persentase' => $config['persentase'] ? $repo->getPersenRealisasi() : 0,
+            'target' => $config['target'] ? $repo->getTarget() : 0,
+            'realisasi' => $config['realisasi'] ? $repo->getRealisasi() : 0,
         ];
     }
 }

@@ -12,16 +12,21 @@ class DataController extends Controller
         protected DataService $dataService
     ) {}
 
-    /**
-     * Menampilkan data pajak spesifik berdasarkan URL parameter {jenis}
-     */
+    public function list(): JsonResponse
+    {
+        return response()->json([
+            'status' => 'success',
+            'data'   => $this->dataService->getMetadataList()
+        ]);
+    }
+
     public function show(string $jenis): JsonResponse
     {
-        $data = $this->dataService->getDataByJenis($jenis);
+        $data = $this->dataService->getDataByHash($jenis);
         if (!$data) {
             return response()->json([
                 'status'  => 'error',
-                'message' => "Jenis pajak '{$jenis}' tidak ditemukan."
+                'message' => "Jenis pajak tidak ditemukan."
             ], 404);
         }
 

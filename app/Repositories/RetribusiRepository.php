@@ -36,7 +36,7 @@ class RetribusiRepository extends ClientDataService
 
     protected function getTargetValue()
     {
-        $result = DB::connection('pgsql')
+        $result = DB::connection('simpatda')
             ->table('t_target_detail')
             ->selectRaw('sum(t_target_detail.t_jumlah) total')
             ->join('s_rekening', 's_rekening.id', '=', 't_target_detail.t_id_rekening')
@@ -55,7 +55,7 @@ class RetribusiRepository extends ClientDataService
 
     protected function getRealisasiValue()
     {
-        $result = DB::connection('pgsql')
+        $result = DB::connection('simpatda')
             ->table('t_pembayaran')
             ->selectRaw('sum(t_pembayaran.t_jumlah_pembayaran) total')
             ->where(DB::raw('extract(year from t_pembayaran.t_tgl_pembayaran)'), now()->year)

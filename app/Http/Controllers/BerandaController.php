@@ -9,6 +9,6 @@ class BerandaController extends Controller
 {
     public function index()
     {
-        Inertia::render('welcome');
+        return Inertia::render('Dashboard');
     }
 }

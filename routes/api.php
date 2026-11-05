@@ -3,4 +3,5 @@
 use App\Http\Controllers\Api\DataController;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/pajak/{jenis}', [DataController::class, 'show']);
+Route::post('list', [DataController::class, 'list']);
+Route::post('data/{jenis}', [DataController::class, 'show']);
