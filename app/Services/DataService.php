@@ -42,6 +42,7 @@ class DataService
         $rawItems = [
             'pbb' => [
                 'name' => 'PBB',
+                'color' => '#2563EB',
                 'repository' => PbbRepository::class,
                 'persentase' => true,
                 'target' => true,
@@ -49,6 +50,7 @@ class DataService
             ],
             'bphtb' => [
                 'name' => 'BPHTB',
+                'color' => '#7C3AED',
                 'repository' => BphtbRepository::class,
                 'persentase' => true,
                 'target' => true,
@@ -56,13 +58,15 @@ class DataService
             ],
             'pbjt' => [
                 'name' => 'PBJT',
+                'color' => '#4F46E5',
                 'repository' => PbjtRepository::class,
                 'persentase' => true,
-                'target' => true,
+                'target' => false,
                 'realisasi' => true,
             ],
             'hotel' => [
                 'name' => 'HOTEL',
+                'color' => '#059669',
                 'repository' => HotelRepository::class,
                 'persentase' => false,
                 'target' => true,
@@ -70,6 +74,7 @@ class DataService
             ],
             'restoran' => [
                 'name' => 'RESTORAN',
+                'color' => '#0D9488',
                 'repository' => RestoranRepository::class,
                 'persentase' => false,
                 'target' => true,
@@ -77,6 +82,7 @@ class DataService
             ],
             'hiburan' => [
                 'name' => 'HIBURAN',
+                'color' => '#0891B2',
                 'repository' => HiburanRepository::class,
                 'persentase' => false,
                 'target' => true,
@@ -84,6 +90,7 @@ class DataService
             ],
             'ppj' => [
                 'name' => 'PPJ',
+                'color' => '#D97706',
                 'repository' => PpjRepository::class,
                 'persentase' => false,
                 'target' => true,
@@ -91,6 +98,7 @@ class DataService
             ],
             'parkir' => [
                 'name' => 'PARKIR',
+                'color' => '#EA580C',
                 'repository' => ParkirRepository::class,
                 'persentase' => false,
                 'target' => true,
@@ -98,6 +106,7 @@ class DataService
             ],
             'reklame' => [
                 'name' => 'REKLAME',
+                'color' => '#E11D48',
                 'repository' => ReklameRepository::class,
                 'persentase' => true,
                 'target' => true,
@@ -105,6 +114,7 @@ class DataService
             ],
             'air_tanah' => [
                 'name' => 'AIR TANAH',
+                'color' => '#DB2777',
                 'repository' => AirTanahRepository::class,
                 'persentase' => true,
                 'target' => true,
@@ -112,6 +122,7 @@ class DataService
             ],
             'retribusi' => [
                 'name' => 'RETRIBUSI',
+                'color' => '#9333EA',
                 'repository' => RetribusiRepository::class,
                 'persentase' => true,
                 'target' => true,
@@ -119,6 +130,7 @@ class DataService
             ],
             'opsen_pkb' => [
                 'name' => 'OPS PKB',
+                'color' => '#0284C7',
                 'repository' => OpsenPkbRepository::class,
                 'persentase' => true,
                 'target' => true,
@@ -126,6 +138,7 @@ class DataService
             ],
             'opsen_bbnkb' => [
                 'name' => 'OPS BBNKB',
+                'color' => '#475569',
                 'repository' => OpsenBbnkbRepository::class,
                 'persentase' => true,
                 'target' => true,
@@ -152,6 +165,7 @@ class DataService
         foreach ($this->getServicesConfig() as $hashKey => $config) {
             $list[] = [
                 'name' => $config['name'],
+                'color' => $config['color'],
                 'persentase' => $config['persentase'],
                 'realisasi' => $config['realisasi'],
                 'target' => $config['target'],
@@ -182,8 +196,8 @@ class DataService
         return [
             'name' => $config['name'],
             'persentase' => $config['persentase'] ? $repo->getPersenRealisasi() : 0,
-            'target' => $config['target'] ? $repo->getTarget() : 0,
-            'realisasi' => $config['realisasi'] ? $repo->getRealisasi() : 0,
+            'target' => $config['target'] || $config['realisasi'] ? (int) $repo->getTarget() : 0,
+            'realisasi' => $config['realisasi'] ? (int) $repo->getRealisasi() : 0,
         ];
     }
 }

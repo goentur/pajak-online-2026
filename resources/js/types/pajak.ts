@@ -4,6 +4,7 @@ export interface TaxMeta {
   realisasi: boolean;
   target: boolean;
   endpoint: string;
+  color: string;
 }
 
 export interface TaxDetail {
