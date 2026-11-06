@@ -50,7 +50,7 @@ export const TaxRevenueCard: React.FC<Props> = ({ title, endpoint, color = '#256
   const percentage = data && data.target > 0 ? Math.min(Math.round((data.realisasi / data.target) * 100), 100) : 0;
 
   return (
-    <div className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between relative overflow-hidden">
+    <div className="bg-white rounded-xl py-3 px-4 border border-slate-100 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between relative overflow-hidden">
       {/* Accent Line Kiri Kartu Mengikuti Prop Color */}
       <div 
         className="absolute left-0 top-0 bottom-0 w-1.5"

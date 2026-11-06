@@ -30,7 +30,7 @@ export const TaxStatCard: React.FC<Props> = ({ title, endpoint, color = '#2563EB
     : 0;
 
   return (
-    <div className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between min-h-[110px] relative overflow-hidden">
+    <div className="bg-white rounded-xl p-4 border border-slate-100 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between min-h-[110px] relative overflow-hidden">
       {/* ACCENT LINE DI BAGIAN ATAS KARTU */}
       <div 
         className="absolute top-0 left-0 right-0 h-1"
