@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    'qris' => [
+        'url' => env('QRIS_URL'),
+        'username' => env('QRIS_USERNAME'),
+        'password' => env('QRIS_PASSWORD'),
+        'key_etax' => env('QRIS_KEY_ETAX'),
+        'key_pbb' => env('QRIS_KEY_PBB'),
+    ],
+
 ];
