@@ -195,7 +195,7 @@ class DataService
 
         return [
             'name' => $config['name'],
-            'persentase' => $config['persentase'] ? $repo->getPersenRealisasi() : 0,
+            'persentase' => $config['realisasi'] || $config['persentase'] ? $repo->getPersenRealisasi() : 0,
             'target' => $config['target'] || $config['realisasi'] ? (int) $repo->getTarget() : 0,
             'realisasi' => $config['realisasi'] ? (int) $repo->getRealisasi() : 0,
         ];

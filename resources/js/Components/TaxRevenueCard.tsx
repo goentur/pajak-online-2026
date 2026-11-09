@@ -47,7 +47,7 @@ export const TaxRevenueCard: React.FC<Props> = ({ title, endpoint, color = '#256
     return `Rp ${formatFullRupiah(val)}`;
   };
 
-  const percentage = data && data.target > 0 ? Math.min(Math.round((data.realisasi / data.target) * 100), 100) : 0;
+  const percentage = data && data.target > 0 ? Math.min(data.persentase, 100) : 0;
 
   return (
     <div className="bg-white rounded-xl py-3 px-4 border border-slate-100 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between relative overflow-hidden">
