@@ -52,16 +52,7 @@ class QrisController extends Controller
                 $qrisResponse = $qris->etax($idBilling)->send();
             }
 
-            // Rakit URL Gambar dari response Bank Jateng
             $qrDataRaw = data_get($qrisResponse, 'data');
-            $fileNameRaw = data_get($qrisResponse, 'filename');
-
-            $baseUrl = Str::finish(config('services.qris.url'), '/');
-            $fileName = is_array($fileNameRaw) ? '' : $fileNameRaw;
-            $qrImageUrlFromFilename = $fileName ? $baseUrl . 'uploads/' . $fileName . '.png' : null;
-
-            $finalQrUrl = $qrImageUrlFromFilename ?? $qrDataRaw;
-
             return response()->json([
                 'status' => 'success',
                 'data' => [

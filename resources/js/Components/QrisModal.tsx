@@ -232,19 +232,13 @@ export const QrisModal: React.FC<QrisModalProps> = ({ isOpen, onClose }) => {
               </div>
             </form>
           ) : (
-            /* RESULT HASIL QRIS (CROPPED IFRAME) */
+            /* Iframe Tampilan Halaman QRIS Bank Jateng */
             <div className="text-center space-y-4">
-              
-              {/* CONTAINER WRAPPER UNTUK CROPPING */}
-              <div className="relative w-full h-[380px] sm:h-[350px] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm flex items-center justify-center">
+              <div className="relative w-full h-[460px] sm:h-[520px] overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-inner flex justify-center">
                 <iframe
                   src={qrisData.qr_string}
                   title="QRIS Bank Jateng"
-                  className="absolute w-[140%] h-[185%] sm:w-[100%] sm:h-[185%] border-0"
-                  style={{
-                    transform: 'scale(1.22)',
-                    transformOrigin: 'center 40%',
-                  }}
+                  className="border-0 absolute top-2 sm:top-0 w-[550px] sm:w-full h-[650px] sm:h-full transform scale-[0.65] sm:scale-100 origin-top"
                 />
               </div>
               {/* OPSI TOMBOL AKSI */}
