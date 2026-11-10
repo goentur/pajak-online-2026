@@ -25,29 +25,36 @@ export const TaxRevenueCard: React.FC<Props> = ({ title, endpoint, color = '#256
     return () => { isMounted = false; };
   }, [endpoint]);
 
-  // 1. Format Rupiah Utuh Penuh
+  // 1. Format Rupiah Utuh Penuh (Mendukung Nilai Negatif)
   const formatFullRupiah = (val: number) => {
-    return new Intl.NumberFormat('id-ID').format(val);
+    return new Intl.NumberFormat('id-ID').format(Math.abs(val));
   };
 
-  // 2. Format Singkatan Tanpa Pembulatan Ke Atas (Truncate 2 Digit Belakang Koma)
+  // 2. Format Singkatan Singkat untuk Selisih (Handling Positif (+) dan Negatif (-))
   const formatTruncatedRupiah = (val: number) => {
-    if (val >= 1_000_000_000_000) {
-      const truncated = Math.floor((val / 1_000_000_000_000) * 100) / 100;
-      return `Rp ${truncated.toFixed(2)} T`;
+    const absVal = Math.abs(val);
+    const prefix = val < 0 ? '- Rp ' : val > 0 ? '+ Rp ' : 'Rp ';
+
+    if (absVal >= 1_000_000_000_000) {
+      const truncated = Math.floor((absVal / 1_000_000_000_000) * 100) / 100;
+      return `${prefix}${truncated.toFixed(2)} T`;
     }
-    if (val >= 1_000_000_000) {
-      const truncated = Math.floor((val / 1_000_000_000) * 100) / 100;
-      return `Rp ${truncated.toFixed(2)} M`;
+    if (absVal >= 1_000_000_000) {
+      const truncated = Math.floor((absVal / 1_000_000_000) * 100) / 100;
+      return `${prefix}${truncated.toFixed(2)} M`;
     }
-    if (val >= 1_000_000) {
-      const truncated = Math.floor((val / 1_000_000) * 100) / 100;
-      return `Rp ${truncated.toFixed(2)} Jt`;
+    if (absVal >= 1_000_000) {
+      const truncated = Math.floor((absVal / 1_000_000) * 100) / 100;
+      return `${prefix}${truncated.toFixed(2)} Jt`;
     }
-    return `Rp ${formatFullRupiah(val)}`;
+    return `${prefix}${formatFullRupiah(absVal)}`;
   };
 
   const percentage = data && data.target > 0 ? Math.min(data.persentase, 100) : 0;
+  
+  // 3. Hitung Selisih (Realisasi - Target)
+  const selisih = data ? data.realisasi - data.target : 0;
+  const isMinus = selisih < 0;
 
   return (
     <div className="bg-white rounded-xl py-3 px-4 border border-slate-100 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between relative overflow-hidden">
@@ -102,20 +109,22 @@ export const TaxRevenueCard: React.FC<Props> = ({ title, endpoint, color = '#256
               </div>
             </div>
 
-            {/* Target & Keterangan Nominal */}
+            {/* Target & Keterangan Selisih Nominal */}
             <div className="flex justify-between items-center text-xs text-slate-400 font-medium pt-1">
               <span>
                 Target: <strong className="text-slate-600 tabular-nums">Rp {data ? formatFullRupiah(data.target) : '0'}</strong>
               </span>
+
+              {/* Badge Selisih Dinamis: Merah (Minus) & Hijau (Plus/Surplus) */}
               <span 
-                className="text-[11px] font-bold px-2 py-0.5 rounded border tabular-nums"
-                style={{
-                  backgroundColor: `${color}14`, // Soft transparent background
-                  color: color,                   // Text color matching sliceColors
-                  borderColor: `${color}40`,     // Border matching sliceColors
-                }}
+                className={`text-[11px] font-bold px-2 py-0.5 rounded border tabular-nums transition-colors ${
+                  isMinus 
+                    ? 'bg-rose-50 text-rose-600 border-rose-200/60' 
+                    : 'bg-emerald-50 text-emerald-600 border-emerald-200/60'
+                }`}
+                title={`Selisih: Rp ${formatFullRupiah(selisih)}`}
               >
-                {data ? formatTruncatedRupiah(data.realisasi) : '0'}
+                {data ? 'Rp '+formatFullRupiah(selisih) : 'Rp 0'}
               </span>
             </div>
           </div>
