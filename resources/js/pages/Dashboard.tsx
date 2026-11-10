@@ -83,7 +83,7 @@ export default function Dashboard() {
                   Persentase Realisasi Pajak
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-8 gap-4">
-                  {/* {taxList
+                  {taxList
                     .filter((tax) => tax.persentase)
                     .map((tax, index) => (
                       <TaxStatCard
@@ -92,14 +92,14 @@ export default function Dashboard() {
                         endpoint={tax.endpoint}
                         color={tax.color}
                       />
-                    ))} */}
+                    ))}
                 </div>
               </div>
 
               {/* SECTION 2 */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                 <div className="lg:col-span-8 sticky top-6">
-                  {/* <TaxTargetPieChart taxList={taxList} /> */}
+                  <TaxTargetPieChart taxList={taxList} />
                 </div>
 
                 <div className="lg:col-span-4 space-y-4">
@@ -108,7 +108,7 @@ export default function Dashboard() {
                   </h2>
                   
                   <div className="space-y-4 overflow-y-auto pr-1">
-                    {/* {taxList
+                    {taxList
                       .filter((tax) => tax.realisasi)
                       .map((tax, index) => (
                         <TaxRevenueCard
@@ -117,7 +117,7 @@ export default function Dashboard() {
                           endpoint={tax.endpoint}
                           color={tax.color}
                         />
-                      ))} */}
+                      ))}
                   </div>
                 </div>
               </div>
