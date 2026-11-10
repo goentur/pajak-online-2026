@@ -24,7 +24,7 @@ class Qris
     public function make()
     {
         $this->http = Http::baseUrl(Str::finish(config('services.qris.url'), '/'))
-            ->withBasicAuth(config('services.qris.username'), config('services.qris.password'))->withoutVerifying();
+            ->withBasicAuth(config('services.qris.username'), config('services.qris.password'));
 
         return $this;
     }
