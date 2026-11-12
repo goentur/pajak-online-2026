@@ -29,7 +29,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <Head title="Pajak Online" />
+      <Head title="Beranda" />
 
       {/* 3. Komponen Modal dipasang di luar layout utama */}
       <QrisModal
