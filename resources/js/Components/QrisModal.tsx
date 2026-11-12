@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import axios from 'axios';
+import ReCAPTCHA from 'react-google-recaptcha'; // 1. Import ReCAPTCHA
 
 interface QrisModalProps {
   isOpen: boolean;
@@ -19,6 +20,13 @@ export const QrisModal: React.FC<QrisModalProps> = ({ isOpen, onClose }) => {
   const [nop, setNop] = useState<string>('');
   const [tahunPajak, setTahunPajak] = useState<string>(new Date().getFullYear().toString());
   const [idBilling, setIdBilling] = useState<string>('');
+
+  // State reCAPTCHA
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
+
+  // Ambil Site Key dari .env Vite
+  const siteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY as string;
 
   // State UI & Response
   const [loading, setLoading] = useState<boolean>(false);
@@ -45,10 +53,18 @@ export const QrisModal: React.FC<QrisModalProps> = ({ isOpen, onClose }) => {
     setNop('');
     setIdBilling('');
     setErrorMessage(null);
+    setRecaptchaToken(null);
+    recaptchaRef.current?.reset();
   };
 
   const handleGenerateQris = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!recaptchaToken) {
+      setErrorMessage('Silakan centang reCAPTCHA terlebih dahulu.');
+      return;
+    }
+
     setLoading(true);
     setErrorMessage(null);
 
@@ -56,6 +72,7 @@ export const QrisModal: React.FC<QrisModalProps> = ({ isOpen, onClose }) => {
       tab: activeTab,
       nop: activeTab === 'pbb' ? nop : idBilling,
       tahun_pajak: activeTab === 'pbb' ? tahunPajak : undefined,
+      recaptcha_token: recaptchaToken, // 2. Token dikirim ke backend
     };
 
     axios.post<{ status: string; data: QrisResponse }>('/api/qris/generate', payload)
@@ -67,6 +84,9 @@ export const QrisModal: React.FC<QrisModalProps> = ({ isOpen, onClose }) => {
       })
       .finally(() => {
         setLoading(false);
+        // 3. Reset widget reCAPTCHA setelah setiap upaya submit
+        recaptchaRef.current?.reset();
+        setRecaptchaToken(null);
       });
   };
 
@@ -74,6 +94,8 @@ export const QrisModal: React.FC<QrisModalProps> = ({ isOpen, onClose }) => {
   const backToForm = () => {
     setQrisData(null);
     setErrorMessage(null);
+    setRecaptchaToken(null);
+    recaptchaRef.current?.reset();
   };
 
   // 2. Fungsi untuk reset penuh & tutup Modal
@@ -82,6 +104,8 @@ export const QrisModal: React.FC<QrisModalProps> = ({ isOpen, onClose }) => {
     setNop('');
     setIdBilling('');
     setErrorMessage(null);
+    setRecaptchaToken(null);
+    recaptchaRef.current?.reset();
     onClose();
   };
 
@@ -92,7 +116,6 @@ export const QrisModal: React.FC<QrisModalProps> = ({ isOpen, onClose }) => {
         {/* Header Modal */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
           <div className="flex items-center gap-2">
-            {/* Tombol Panah Kembali jika sedang di tampilan QRIS */}
             {qrisData ? (
               <button
                 type="button"
@@ -214,10 +237,23 @@ export const QrisModal: React.FC<QrisModalProps> = ({ isOpen, onClose }) => {
                 </div>
               )}
 
+              {/* 4. Widget Google reCAPTCHA v2 */}
+              <div className="flex justify-center my-3">
+                <ReCAPTCHA
+                  ref={recaptchaRef}
+                  sitekey={siteKey}
+                  onChange={(token) => {
+                    setRecaptchaToken(token);
+                    setErrorMessage(null);
+                  }}
+                  onExpired={() => setRecaptchaToken(null)}
+                />
+              </div>
+
               <div className="pt-2">
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || !recaptchaToken}
                   className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-300 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2"
                 >
                   {loading ? (
@@ -241,6 +277,7 @@ export const QrisModal: React.FC<QrisModalProps> = ({ isOpen, onClose }) => {
                   className="border-0 absolute top-2 sm:top-0 w-[550px] sm:w-full h-[650px] sm:h-full transform scale-[0.65] sm:scale-100 origin-top"
                 />
               </div>
+              
               {/* OPSI TOMBOL AKSI */}
               <div className="grid grid-cols-2 gap-3">
                 <button

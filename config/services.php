@@ -43,4 +43,9 @@ return [
         'key_pbb' => env('QRIS_KEY_PBB'),
     ],
 
+    'recaptcha' => [
+        'site_key'   => env('RECAPTCHA_SITE_KEY'),
+        'secret_key' => env('RECAPTCHA_SECRET_KEY'),
+    ],
+
 ];

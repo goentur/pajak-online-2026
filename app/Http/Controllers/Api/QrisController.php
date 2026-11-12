@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Rules\Recaptcha; // 1. Import rule reCAPTCHA di sini
 use App\Services\Qris;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -13,7 +14,7 @@ class QrisController extends Controller
 {
     public function generate(Request $request, Qris $qrisService)
     {
-        // Validasi simpel: hanya tab, nop (atau idBilling), dan tahun_pajak jika PBB
+        // Validasi input termasuk recaptcha_token
         $request->validate([
             'tab' => 'required|in:pbb,lainnya',
             'nop' => [
@@ -23,6 +24,9 @@ class QrisController extends Controller
                 Rule::when($request->input('tab') !== 'pbb', ['min:16', 'max:17']),
             ],
             'tahun_pajak' => 'required_if:tab,pbb|nullable|string|size:4',
+
+            // 2. Tambahkan validasi reCAPTCHA di sini
+            'recaptcha_token' => ['required', 'string', new Recaptcha],
         ]);
 
         try {
